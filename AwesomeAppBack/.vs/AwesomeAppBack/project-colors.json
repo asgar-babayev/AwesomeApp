@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "36a8c9b1-f9cd-4f15-b00f-9d272c19f45b": {
+      "ProjectGuid": "36a8c9b1-f9cd-4f15-b00f-9d272c19f45b",
+      "DisplayName": "AwesomeAppBack",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 1
+}

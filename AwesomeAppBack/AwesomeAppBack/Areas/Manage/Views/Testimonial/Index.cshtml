@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@model List<Testimonial>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Image</th>
+                <th>Customer Name</th>
+                <th>Company Name</th>
+                <th>FeedBack</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td><img width="70" src="~/assets/images/@item.Image" /></td>
+                    <td>@item.CustomerName</td>
+                    <td>@item.CompanyName</td>
+                    <td>@item.FeedBack</td>
+                    <td><a asp-controller="Testimonial" asp-action="Edit" asp-area="Manage" asp-route-id="@item.Id" class="text-info">Edit</a></td>
+                    <td><a asp-controller="Testimonial" asp-action="Delete" asp-area="Manage" asp-route-id="@item.Id" class="text-danger">Delete</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h1 class="display-4">Testimonial page is empty</h1>
+}
+
+
+
+

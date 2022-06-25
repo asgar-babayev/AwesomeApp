@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewData["Title"] = "Edit";
+}
+@model Testimonial
+
+<form method="post" asp-action="Edit" enctype="multipart/form-data">
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label asp-for="CustomerName"></label>
+            <input asp-for="CustomerName" class="form-control">
+            <span asp-validation-for="CustomerName"></span>
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="CompanyName"></label>
+            <input asp-for="CompanyName" class="form-control">
+            <span asp-validation-for="CompanyName"></span>
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="FeedBack"></label>
+            <textarea asp-for="FeedBack" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="FeedBack"></span>
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="ImageFile"></label>
+            <input asp-for="ImageFile" class="form-control">
+            <span asp-validation-for="ImageFile"></span>
+        </div>
+    </div>
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Edit</button>
+    </div>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.4/jquery.validate.min.js" integrity="sha512-FOhq9HThdn7ltbK8abmGn60A/EMtEzIzv1rvuh+DqzJtSGq8BRdEN0U+j0iKEIffiw/yEtVuladk6rsG4X6Uqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js" integrity="sha512-o6XqxgrUsKmchwy9G5VRNWSSxTS4Urr4loO6/0hYdpWmFUfHqGzawGxeQGMDqYzxjY9sbktPbNlkIQJWagVZQg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
