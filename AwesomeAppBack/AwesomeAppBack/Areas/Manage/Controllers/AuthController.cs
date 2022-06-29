@@ -3,6 +3,11 @@ using AwesomeAppBack.DAL;
 using AwesomeAppBack.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AwesomeAppBack.Areas.Manage.Controllers
@@ -32,23 +37,14 @@ namespace AwesomeAppBack.Areas.Manage.Controllers
             if (user == null)
             {
                 ModelState.AddModelError("", "Invalid Username or Password");
-                return View(signInVm);
             }
-            var result = await SignInManager.PasswordSignInAsync(user, signInVm.Password, true, true);
-            if (result.IsLockedOut)
-            {
-                ModelState.AddModelError("", "You have exceeded the password entry limit");
-                return View(signInVm);
-            }
+            var result = await SignInManager.PasswordSignInAsync(user, signInVm.Password, false,false);
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", "Username or Password Incorrect!");
-                return View(signInVm);
             }
-            return RedirectToAction("Index", "Home", new { Area = "" });
+            return RedirectToAction("Index");
         }
-
-   
 
         public IActionResult Register()
         {
@@ -82,6 +78,26 @@ namespace AwesomeAppBack.Areas.Manage.Controllers
         {
             await SignInManager.SignOutAsync();
             return RedirectToAction("Index", "Home", new { Area = "" });
+        }
+
+        private string GenerateJSONWebToken(string username)
+        {
+            var claims = new[] {
+                new Claim("Username", username)
+            };
+            var key = "HelloAwesomeAppIAmDeveloper@private-6-6-6";
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+               issuer: "https://localhost",
+                audience: "https://localhost",
+                expires: DateTime.Now.AddHours(3),
+                signingCredentials: credentials,
+                claims: claims
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

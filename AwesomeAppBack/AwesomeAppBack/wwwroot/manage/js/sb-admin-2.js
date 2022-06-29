@@ -23,6 +23,9 @@
       $('.sidebar .collapse').collapse('hide');
     };
   });
+    //$(document).ready(function () {
+    //    $('ul.pagination > li.disabled > a').addClass('page-link');
+    //});
 
   // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
   $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {

@@ -11,5 +11,6 @@ namespace AwesomeAppBack.DAL
 
         }
         public DbSet<Testimonial> Testimonials { get; set; }
+        public DbSet<Setting> Settings { get; set; }
     }
 }

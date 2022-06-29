@@ -1,5 +1,6 @@
 using AwesomeAppBack.DAL;
 using AwesomeAppBack.Models;
+using AwesomeAppBack.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -50,6 +51,10 @@ namespace AwesomeAppBack
             {
                 x.LoginPath = "/Manage/Auth/Login";
             });
+            
+            services.AddScoped<LayoutService>();
+
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

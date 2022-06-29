@@ -1,11 +1,13 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
 }
 
-@model List<Testimonial>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
 
-@if (Model != null && Model.Count > 0)
+@model IPagedList<Testimonial>
+@if (Model != null)
 {
     <table class="table table-striped">
         <thead>
@@ -33,12 +35,16 @@
             }
         </tbody>
     </table>
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page }),
+    new PagedListRenderOptions
+    {
+        ContainerDivClasses = new[] { "navigation" },
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" },
+    })
 }
 else
 {
     <h1 class="display-4">Testimonial page is empty</h1>
 }
-
-
-
 

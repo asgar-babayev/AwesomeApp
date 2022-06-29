@@ -2,14 +2,16 @@
 using AwesomeAppBack.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
 using System.Linq;
+using X.PagedList;
 
 namespace AwesomeAppBack.Areas.Manage.Controllers
 {
-    [Area("Manage"),Authorize]
+    [Area("Manage"), Authorize]
     public class TestimonialController : Controller
     {
         readonly Context _context;
@@ -21,9 +23,16 @@ namespace AwesomeAppBack.Areas.Manage.Controllers
             _env = env;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            return View(_context.Testimonials.ToList());
+            if (page <= 0) page = 1;
+            var pageNumber = page ?? 1;
+            int pageSize = 1;
+            if (_context.Testimonials.ToPagedList(pageNumber, pageSize).Count > 0)
+            {
+                return View(_context.Testimonials.ToPagedList(pageNumber, pageSize));
+            }
+            return View(_context.Testimonials.ToPagedList(1, pageSize));
         }
 
         public IActionResult Create()
@@ -35,21 +44,18 @@ namespace AwesomeAppBack.Areas.Manage.Controllers
         {
             if (testimonial.ImageFile != null)
             {
-                if (testimonial.ImageFile.ContentType != "image/jpeg" && testimonial.ImageFile.ContentType != "image/png" && testimonial.ImageFile.ContentType != "image/webp")
+                if (!CheckFileType(testimonial.ImageFile))
                 {
                     ModelState.AddModelError("", "This is not image format");
                     return View(testimonial);
                 }
-                if (testimonial.ImageFile.Length / 1024 > 2000)
+                if (!CheckFileSize(testimonial.ImageFile, 2000))
                 {
                     ModelState.AddModelError("", "Image can't many 2mb");
                     return View(testimonial);
                 }
                 string fileName = testimonial.ImageFile.FileName;
-                if (fileName.Length > 64)
-                {
-                    fileName.Substring(fileName.Length - 64, 64);
-                }
+                FileNameShorter(fileName);
                 string newFileName = Guid.NewGuid().ToString() + fileName;
                 string path = Path.Combine(_env.WebRootPath, "assets", "images", newFileName);
                 using (FileStream st = new FileStream(path, FileMode.Create))
@@ -67,8 +73,25 @@ namespace AwesomeAppBack.Areas.Manage.Controllers
         {
             return View(_context.Testimonials.FirstOrDefault(x => x.Id == id));
         }
+        
+        public bool CheckFileSize(IFormFile imageFile, int size)
+        {
+            if (imageFile.Length / 1024 > size) return false;
+            return true;
+        }
+        public bool CheckFileType(IFormFile imageFile)
+        {
+            if (imageFile.ContentType != "image/jpeg" && imageFile.ContentType != "image/png" && imageFile.ContentType != "image/webp")
+                return false;
+            return true;
+        }
 
-        [HttpPost,ValidateAntiForgeryToken]
+        public void FileNameShorter(string fileName)
+        {
+            if(fileName.Length > 64) fileName.Substring(fileName.Length - 64, 64);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Edit(Testimonial testimonial)
         {
             var existTestimonial = _context.Testimonials.FirstOrDefault(x => x.Id == testimonial.Id);
@@ -77,21 +100,18 @@ namespace AwesomeAppBack.Areas.Manage.Controllers
 
             if (testimonial.ImageFile != null)
             {
-                if (testimonial.ImageFile.ContentType != "image/jpeg" && testimonial.ImageFile.ContentType != "image/png" && testimonial.ImageFile.ContentType != "image/webp")
+                if (!CheckFileType(testimonial.ImageFile))
                 {
-                    ModelState.AddModelError("ImageFile", "Image can be only .jpeg or .png");
-                    return View();
+                    ModelState.AddModelError("", "This is not image format");
+                    return View(testimonial);
                 }
-                if (testimonial.ImageFile.Length > 2097152)
+                if (!CheckFileSize(testimonial.ImageFile, 2000))
                 {
-                    ModelState.AddModelError("ImageFile", "Image size must be lower than 2mb");
-                    return View();
+                    ModelState.AddModelError("", "Image can't many 2mb");
+                    return View(testimonial);
                 }
                 string fileName = testimonial.ImageFile.FileName;
-                if (fileName.Length > 64)
-                {
-                    fileName = fileName.Substring(fileName.Length - 64, 64);
-                }
+                FileNameShorter(fileName);
                 newFileName = Guid.NewGuid().ToString() + fileName;
 
                 string path = Path.Combine(_env.WebRootPath, "assets", "images", newFileName);

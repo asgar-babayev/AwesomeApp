@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    int count = 1;
+}
+
+<style>
+    .icon i{
+        font-size: 25px;
+    }
+</style>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+
+@model IPagedList<Setting>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Logo Icon</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <th scope="row">@(count++)</th>
+                    <td class="icon">@(Html.Raw(item.Value))</td>
+                    <td><a asp-controller="Setting" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@Html.PagedListPager((IPagedList)Model, page=> Url.Action("Index", new {page=page}),
+new PagedListRenderOptions{
+    ContainerDivClasses = new[]{"navigation"},
+    LiElementClasses = new[]{"page-item"},
+    PageClasses = new[]{"page-link"},
+})
